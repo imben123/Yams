@@ -30,6 +30,9 @@ public class YAMLDecoder {
     /// Options to use when decoding from YAML.
     public var options = Options()
 
+    /// User info dictionary to be used during decoding.
+    public var userInfo: [CodingUserInfoKey: Any] = [:]
+
     /// Creates a `YAMLDecoder` instance.
     ///
     /// - parameter encoding: String encoding,
@@ -53,7 +56,10 @@ public class YAMLDecoder {
     public func decode<T>(_ type: T.Type = T.self,
                           from node: Node,
                           userInfo: [CodingUserInfoKey: Any] = [:]) throws -> T where T: Swift.Decodable {
-        var finalUserInfo = userInfo
+        var finalUserInfo = self.userInfo
+        for (key, value) in userInfo {
+            finalUserInfo[key] = value
+        }
         if let dealiasingStrategy = options.aliasDereferencingStrategy {
             finalUserInfo[.aliasDereferencingStrategy] = dealiasingStrategy
         }

@@ -15,6 +15,9 @@ public class YAMLEncoder {
     /// Options to use when encoding to YAML.
     public var options = Options()
 
+    /// User info dictionary to be used during encoding.
+    public var userInfo: [CodingUserInfoKey: Any] = [:]
+
     /// Creates a `YAMLEncoder` instance.
     public init() {}
 
@@ -28,7 +31,10 @@ public class YAMLEncoder {
     /// - throws: `EncodingError` if something went wrong while encoding.
     public func encode<T: Swift.Encodable>(_ value: T, userInfo: [CodingUserInfoKey: Any] = [:]) throws -> String {
         do {
-            var finalUserInfo = userInfo
+            var finalUserInfo = self.userInfo
+            for (key, value) in userInfo {
+                finalUserInfo[key] = value
+            }
             if let aliasingStrategy = options.redundancyAliasingStrategy {
                 finalUserInfo[.redundancyAliasingStrategyKey] = aliasingStrategy
             }
